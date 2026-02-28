@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package notifications;
 
-option go_package = "chainwise/contracts/gen/notifications";
+option go_package = "gen/notifications";
 
 // NotificationService — подписка на события заказов (RabbitMQ), рассылка по WebSocket/SSE по роли/branch_id/courier_id.
 // gRPC API опционален; основной поток — события через MQ.

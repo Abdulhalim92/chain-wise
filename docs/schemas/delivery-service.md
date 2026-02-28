@@ -1,6 +1,8 @@
 # Delivery Service — схема БД
 
-Назначение заказа на курьера (pull: ClaimOrder, push: AssignOrder), подтверждение забора и доставки; gRPC к Order (ValidateQR, TransitionStatus).
+**Назначение:** назначение заказа на курьера (pull/push), подтверждение забора и доставки; gRPC к Order (ValidateQR, TransitionStatus).
+
+---
 
 ## Таблицы
 

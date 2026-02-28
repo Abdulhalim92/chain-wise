@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package delivery;
 
-option go_package = "chainwise/contracts/gen/delivery";
+option go_package = "gen/delivery";
 
 // DeliveryService — назначение заказа на курьера (pull/push), подтверждение забора/доставки; gRPC к Order (ValidateQR, TransitionStatus).
 service DeliveryService {

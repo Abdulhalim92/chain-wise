@@ -10,6 +10,10 @@ import (
 	"syscall"
 	"time"
 
+	authpb "chainwise/contracts/gen/auth"
+	"chainwise/iam-service/internal/app"
+	iamgrpc "chainwise/iam-service/internal/grpc"
+	"chainwise/iam-service/internal/repository"
 	"chainwise/platform/config"
 	"chainwise/platform/health"
 	"chainwise/platform/interceptors"
@@ -28,6 +32,7 @@ func main() {
 	log := logger.New(logger.Options{Level: cfg.LogLevel, Format: logger.Format(cfg.LogFormat), AddSource: cfg.LogAddSource, Service: "iam-service"})
 
 	mux := http.NewServeMux()
+	// HTTP / и /health — операционные эндпоинты; envelope не требуется (клиенты идут через Gateway).
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusOK); fmt.Fprint(w, "iam-service") })
 	mux.HandleFunc("/health", health.Handler())
 	handler := middleware.RequestID(middleware.Recovery(log.Logger, middleware.Logging(log.Logger, mux)))
@@ -52,6 +57,20 @@ func main() {
 		),
 	)
 	health.RegisterGRPC(grpcSrv)
+	if cfg.Env == "prod" && cfg.JWTSecret == "" {
+		fmt.Fprintln(os.Stderr, "JWT_SECRET is required when env=prod")
+		os.Exit(1)
+	}
+	jwtSecret := cfg.JWTSecret
+	if jwtSecret == "" {
+		jwtSecret = "change-me"
+	}
+	authApp := &app.AuthApp{
+		UserRepo:       &repository.PostgresUserRepository{},
+		PermissionRepo: &repository.PostgresPermissionRepository{},
+		JWTSecret:      []byte(jwtSecret),
+	}
+	authpb.RegisterAuthServiceServer(grpcSrv, &iamgrpc.AuthServer{App: authApp, Log: log.Logger})
 	lis, err := net.Listen("tcp", ":"+cfg.GrpcPort)
 	if err != nil {
 		log.Error("grpc listen error", "error", err)

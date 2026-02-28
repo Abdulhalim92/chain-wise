@@ -9,8 +9,9 @@ import (
 	"syscall"
 	"time"
 
+	"chainwise/gateway/internal/envelope"
+	"chainwise/gateway/internal/recovery"
 	"chainwise/platform/config"
-	"chainwise/platform/health"
 	"chainwise/platform/logger"
 	"chainwise/platform/middleware"
 )
@@ -26,8 +27,8 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handleRoot)
-	mux.HandleFunc("/health", health.Handler())
-	handler := middleware.RequestID(middleware.Recovery(log.Logger, middleware.Logging(log.Logger, mux)))
+	mux.HandleFunc("/health", handleHealth)
+	handler := middleware.RequestID(recovery.Recovery(log.Logger, middleware.Logging(log.Logger, mux)))
 
 	srv := &http.Server{Addr: ":" + cfg.Port, Handler: handler}
 	go func() {
@@ -49,7 +50,18 @@ func main() {
 
 const shutdownTimeout = 10 * time.Second
 
-func handleRoot(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "gateway")
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+	reqID, _ := r.Context().Value(middleware.RequestIDKey).(string)
+	if reqID == "" {
+		reqID = "unknown"
+	}
+	envelope.WriteSuccess(w, reqID, map[string]string{"service": "gateway"}, nil)
+}
+
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	reqID, _ := r.Context().Value(middleware.RequestIDKey).(string)
+	if reqID == "" {
+		reqID = "unknown"
+	}
+	envelope.WriteSuccess(w, reqID, map[string]string{"status": "ok"}, nil)
 }

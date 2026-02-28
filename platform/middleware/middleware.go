@@ -43,7 +43,9 @@ func Recovery(logger *slog.Logger, next http.Handler) http.Handler {
 				reqID, _ := r.Context().Value(RequestIDKey).(string)
 				logger.Error("panic recovered", "error", err, "method", r.Method, "path", r.URL.Path, "request_id", reqID, "stack", string(debug.Stack()))
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("internal server error"))
+				if _, wErr := w.Write([]byte("internal server error")); wErr != nil {
+					logger.Error("response write failed", "error", wErr)
+				}
 			}
 		}()
 		next.ServeHTTP(w, r)

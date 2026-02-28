@@ -2,7 +2,10 @@ module chainwise/platform
 
 go 1.26
 
+replace chainwise/contracts => ../contracts
+
 require (
+	chainwise/contracts v0.0.0
 	github.com/spf13/viper v1.19.0
 	google.golang.org/grpc v1.68.0
 )

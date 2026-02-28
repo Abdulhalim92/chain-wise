@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package inventory;
 
-option go_package = "chainwise/contracts/gen/inventory";
+option go_package = "gen/inventory";
 
 // InventoryService — остатки по локациям, асинхронный резерв по order.created, gRPC от Accounting для прихода.
 service InventoryService {

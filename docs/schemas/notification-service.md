@@ -1,6 +1,8 @@
 # Notification Service — схема БД
 
-Постоянная БД не обязательна. Сервис подписан на RabbitMQ (notification_events / order_events), рассылает обновления по WebSocket/SSE по роли, branch_id, courier_id.
+**Назначение:** рассылка обновлений по WebSocket/SSE; подписка на RabbitMQ. Постоянная БД не обязательна.
+
+---
 
 ## Опциональная схема (при необходимости)
 

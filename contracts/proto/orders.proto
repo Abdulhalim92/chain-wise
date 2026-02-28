@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package orders;
 
-option go_package = "chainwise/contracts/gen/orders";
+option go_package = "gen/orders";
 
 // OrderService — жизненный цикл заказа, State Machine, генерация/проверка QR, публикация в RabbitMQ order_events.
 service OrderService {

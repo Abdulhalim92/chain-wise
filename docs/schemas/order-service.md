@@ -1,6 +1,8 @@
 # Order Service — схема БД
 
-Сервис заказов: жизненный цикл, State Machine, генерация/валидация QR, публикация в RabbitMQ `order_events`.
+**Назначение:** жизненный цикл заказа, State Machine, генерация/валидация QR, публикация в RabbitMQ `order_events`.
+
+---
 
 ## Таблицы
 

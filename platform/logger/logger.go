@@ -29,7 +29,7 @@ type Logger struct {
 	opts Options
 }
 
-// New создаёт логгер по опциям (уровень, формат json/text, add_source, service).
+// New создаёт логгер по опциям. При пустом Format/Level используются внутренние дефолты (json, info), не из config.
 func New(opts Options) *Logger {
 	if opts.Output == nil {
 		opts.Output = os.Stdout

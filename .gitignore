@@ -1,0 +1,52 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+# Скомпилированные бинарники сервисов (go build в каталоге сервиса)
+**/iam-service
+**/order-service
+**/inventory-service
+**/accounting-service
+**/delivery-service
+**/notification-service
+**/gateway
+
+# Go
+*.test
+*.out
+go.work.sum
+vendor/
+
+# Coverage
+coverage.html
+coverage.txt
+*.coverprofile
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Logs and temp
+*.log
+/tmp/
+/temp/
+
+# Build artifacts
+dist/
+build/

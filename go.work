@@ -1,0 +1,12 @@
+go 1.26
+
+use (
+	./contracts
+	./services/iam-service
+	./services/order-service
+	./services/inventory-service
+	./services/accounting-service
+	./services/delivery-service
+	./services/notification-service
+	./gateway
+)

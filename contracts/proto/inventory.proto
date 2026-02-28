@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package inventory;
+
+option go_package = "chainwise/contracts/gen/inventory";
+
+// InventoryService — остатки по локациям, асинхронный резерв по order.created, gRPC от Accounting для прихода.
+service InventoryService {
+  rpc IncreaseStock(IncreaseStockRequest) returns (IncreaseStockResponse);
+  rpc GetStock(GetStockRequest) returns (GetStockResponse);
+  rpc CancelReservation(CancelReservationRequest) returns (CancelReservationResponse);
+}
+
+message StockItem {
+  string location_id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+  int32 reserved = 4;
+}
+
+message IncreaseStockRequest {
+  string location_id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+  string reason = 4;
+}
+
+message IncreaseStockResponse {
+  StockItem stock = 1;
+}
+
+message GetStockRequest {
+  string location_id = 1;
+  string product_id = 2;
+}
+
+message GetStockResponse {
+  StockItem stock = 1;
+}
+
+message CancelReservationRequest {
+  string order_id = 1;
+}
+
+message CancelReservationResponse {
+  bool success = 1;
+}

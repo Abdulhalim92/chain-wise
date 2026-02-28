@@ -1,0 +1,8 @@
+version: v2
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: .
+  - remote: buf.build/grpc/go
+    out: .
+inputs:
+  - directory: proto

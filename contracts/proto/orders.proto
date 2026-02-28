@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package orders;
+
+option go_package = "chainwise/contracts/gen/orders";
+
+// OrderService — жизненный цикл заказа, State Machine, генерация/проверка QR, публикация в RabbitMQ order_events.
+service OrderService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+  rpc ValidateQR(ValidateQRRequest) returns (ValidateQRResponse);
+  rpc TransitionStatus(TransitionStatusRequest) returns (TransitionStatusResponse);
+}
+
+// Статусы заказа: Created → Reserved → InProgress → ReadyForPickup → InTransit → Delivered; или Cancelled.
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_CREATED = 1;
+  ORDER_STATUS_RESERVED = 2;
+  ORDER_STATUS_IN_PROGRESS = 3;
+  ORDER_STATUS_READY_FOR_PICKUP = 4;
+  ORDER_STATUS_IN_TRANSIT = 5;
+  ORDER_STATUS_DELIVERED = 6;
+  ORDER_STATUS_CANCELLED = 7;
+}
+
+message OrderItem {
+  string product_id = 1;
+  int32 quantity = 2;
+  int64 unit_price_cents = 3; // цена за единицу на момент заказа, копейки
+}
+
+message Order {
+  string id = 1;
+  string branch_id = 2;
+  OrderStatus status = 3;
+  repeated OrderItem items = 4;
+  int64 created_at_unix = 5;
+  optional string courier_id = 6;
+}
+
+message CreateOrderRequest {
+  string branch_id = 1;
+  repeated OrderItem items = 2;
+}
+
+message CreateOrderResponse {
+  Order order = 1;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+
+message GetOrderResponse {
+  Order order = 1;
+}
+
+message ListOrdersRequest {
+  optional string branch_id = 1;
+  optional string courier_id = 2;
+  string role = 3;
+}
+
+message ListOrdersResponse {
+  repeated Order orders = 1;
+}
+
+message ValidateQRRequest {
+  string order_id = 1;
+  string qr_token = 2;
+}
+
+message ValidateQRResponse {
+  bool valid = 1;
+}
+
+message TransitionStatusRequest {
+  string order_id = 1;
+  OrderStatus target_status = 2;
+}
+
+message TransitionStatusResponse {
+  Order order = 1;
+}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package delivery;
+
+option go_package = "chainwise/contracts/gen/delivery";
+
+// DeliveryService — назначение заказа на курьера (pull/push), подтверждение забора/доставки; gRPC к Order (ValidateQR, TransitionStatus).
+service DeliveryService {
+  rpc ClaimOrder(ClaimOrderRequest) returns (ClaimOrderResponse);
+  rpc AssignOrder(AssignOrderRequest) returns (AssignOrderResponse);
+  rpc ConfirmPickup(ConfirmPickupRequest) returns (ConfirmPickupResponse);
+  rpc ConfirmDelivery(ConfirmDeliveryRequest) returns (ConfirmDeliveryResponse);
+}
+
+message DeliveryAssignment {
+  string order_id = 1;
+  string courier_id = 2;
+  int64 assigned_at_unix = 3;
+}
+
+message ClaimOrderRequest {
+  string courier_id = 1;
+}
+
+message ClaimOrderResponse {
+  DeliveryAssignment assignment = 1;
+}
+
+message AssignOrderRequest {
+  string order_id = 1;
+  string courier_id = 2;
+}
+
+message AssignOrderResponse {
+  DeliveryAssignment assignment = 1;
+}
+
+message ConfirmPickupRequest {
+  string order_id = 1;
+  string qr_token = 2;
+}
+
+message ConfirmPickupResponse {
+  bool success = 1;
+}
+
+message ConfirmDeliveryRequest {
+  string order_id = 1;
+  string qr_token = 2;
+}
+
+message ConfirmDeliveryResponse {
+  bool success = 1;
+}

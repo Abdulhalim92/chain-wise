@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "chainwise/contracts/gen/auth";
+
+// AuthService — аутентификация и валидация токенов.
+service AuthService {
+  // Login — вход пользователя, возвращает JWT.
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // ValidateToken — проверка JWT и контекст пользователя (роли, права).
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+message LoginRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  string user_id = 2;
+  string role = 3;
+  optional string branch_id = 4;
+  repeated string permissions = 5;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  string user_id = 1;
+  string role = 2;
+  optional string branch_id = 3;
+  optional string courier_id = 4;
+  repeated string permissions = 5;
+  bool valid = 6;
+}

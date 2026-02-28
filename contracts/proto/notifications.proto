@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package notifications;
+
+option go_package = "chainwise/contracts/gen/notifications";
+
+// NotificationService — подписка на события заказов (RabbitMQ), рассылка по WebSocket/SSE по роли/branch_id/courier_id.
+// gRPC API опционален; основной поток — события через MQ.
+service NotificationService {}
+
+enum OrderEventType {
+  ORDER_EVENT_TYPE_UNSPECIFIED = 0;
+  ORDER_EVENT_TYPE_CREATED = 1;
+  ORDER_EVENT_TYPE_RESERVED = 2;
+  ORDER_EVENT_TYPE_IN_PROGRESS = 3;
+  ORDER_EVENT_TYPE_READY_FOR_PICKUP = 4;
+  ORDER_EVENT_TYPE_IN_TRANSIT = 5;
+  ORDER_EVENT_TYPE_DELIVERED = 6;
+  ORDER_EVENT_TYPE_CANCELLED = 7;
+}
+
+message OrderEvent {
+  string id = 1;
+  string order_id = 2;
+  OrderEventType event_type = 3;
+  int64 occurred_at_unix = 4;
+}

@@ -2,11 +2,12 @@ go 1.26
 
 use (
 	./contracts
-	./services/iam-service
-	./services/order-service
-	./services/inventory-service
+	./gateway
+	./platform
 	./services/accounting-service
 	./services/delivery-service
+	./services/iam-service
+	./services/inventory-service
 	./services/notification-service
-	./gateway
+	./services/order-service
 )
